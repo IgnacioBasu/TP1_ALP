@@ -1,6 +1,6 @@
 {-# LANGUAGE PatternSynonyms #-}
+{-# LANGUAGE MonoLocalBinds #-}
 module AST where
-
 
 
 -- Identificadores de Variable
@@ -12,6 +12,7 @@ data Exp a where
   -- Expresiones enteras
   Const  :: Int -> Exp Int
   Var    :: Variable -> Exp Int
+  VarInc :: Variable -> Exp Int
   UMinus :: Exp Int -> Exp Int
   Plus   :: Exp Int -> Exp Int -> Exp Int
   Minus  :: Exp Int -> Exp Int -> Exp Int
@@ -44,5 +45,8 @@ data Comm
 
 pattern IfThen :: Exp Bool -> Comm -> Comm
 pattern IfThen b c = IfThenElse b c Skip
+
+pattern Case :: Exp Bool -> Comm -> Comm -> Comm
+pattern Case exp comando sig = IfThenElse exp comando sig
 
 data Error = DivByZero | UndefVar deriving (Eq, Show)
