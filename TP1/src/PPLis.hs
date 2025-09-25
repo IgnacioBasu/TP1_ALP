@@ -1,8 +1,9 @@
+{-# LANGUAGE GADTs #-}
 {-# OPTIONS_GHC  -Wno-overlapping-patterns #-}
 
 module PPLis where
 
-import           AST
+import           AST  
 import           Text.PrettyPrint
 import           Prelude                 hiding ( (<>) )
 
@@ -57,7 +58,8 @@ pComm (IfThenElse b c1 c2) =
     $$  rbrace
 pComm (RepeatUntil c b) =
   text "repeat" <+> lbrace $$ nest tabW (pComm c) $$ rbrace <+> text "until" <+> parens (pExp b)
-pComm (Case )
+pComm (Case a b c) =
+  text "case" <+> parens (pExp a) <+> lbrace $$ nest tabW (pComm b) $$ rbrace <+> text "else" <+> lbrace $$ nest tabW (pComm c) $$ rbrace
   
 renderComm :: Comm -> String
 renderComm = render . pComm
