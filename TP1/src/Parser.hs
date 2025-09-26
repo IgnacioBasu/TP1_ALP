@@ -4,6 +4,7 @@ import           Text.ParserCombinators.Parsec
 import           Text.Parsec.Token
 import           Text.Parsec.Language           ( emptyDef )
 import           AST
+import Data.Bool (bool)
 
 -----------------------
 -- Función para facilitar el testing del parser.
@@ -99,12 +100,12 @@ parseConst = do
     return (Const (fromInteger n))
 
 parseFactor :: Parser (Exp Int)
-parseFactor = do varIncOp 
-  <|> do uMinusOp 
-  <|> do parseConst
-  <|> do parseVar
-  <|> do expr <- parensT intexp
-         return expr
+parseFactor = try varIncOp
+  <|> try uMinusOp
+  <|> try parseConst
+  <|> try parseVar
+  <|> try (do expr <- parensT intexp
+              return expr)
 
 parseTerm :: Parser (Exp Int)
 parseTerm = parseFactor `chainl1` mulOp
@@ -143,6 +144,7 @@ compOp = (do
             reservedOpT "<"
             return Lt
          )
+         
 
 boolexp :: Parser (Exp Bool)
 boolexp = boolterm `chainl1` boolOp
@@ -164,11 +166,13 @@ boolterm =
             return BFalse
         )
     <|> (do
-            e0 <- intexp
-            op <- compOp
-            e1 <- intexp
-            return (op e0 e1)
+          e0 <- intexp
+          op <- compOp
+          e1 <- intexp
+          return (op e0 e1)
         )
+
+
 
 -----------------------------------
 --- Parser de comandos
