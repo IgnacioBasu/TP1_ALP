@@ -37,6 +37,7 @@ lis = makeTokenParser
                         , "!="
                         , ";"
                         , ","
+                        , "++"
                         ]
     }
   )
