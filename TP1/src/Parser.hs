@@ -215,9 +215,9 @@ caseBranch = do
 --     reservedT "case"
 --     branches <- bracesT (many caseBranch)
 --     return (Case branches)
--- ----------------------------------------------
--- --- FIN: Parser de CASE (Falta testear) :)
--- ----------------------------------------------
+----------------------------------------------
+--- FIN: Parser de CASE (Falta testear) :)
+----------------------------------------------
 
 commAux :: Parser Comm
 commAux =
@@ -243,7 +243,7 @@ commAux =
         return (RepeatUntil c b)
     )
     -- <|>
-    --parseCase
+    -- parseCase
 
 
 ------------------------------------

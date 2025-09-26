@@ -7,6 +7,7 @@ where
 import AST
 import qualified Data.Map.Strict as M
 import Data.Strict.Tuple
+import Data.Maybe (fromJust)
 
 --cabal update
 --cabal install strict
@@ -23,9 +24,8 @@ initState = M.empty
 -- Busca el valor de una variable en un estado
 -- Completar la definición
 lookfor :: Variable -> State -> Int
-lookfor v s = case M.lookup v s of 
-                  Just n -> n 
-                  Nothing -> error ("Variable " ++ v ++ " no definida") 
+lookfor v s = fromJust (M.lookup v s) 
+         
 
 -- Cambia el valor de una variable en un estado
 -- Completar la definición
