@@ -140,11 +140,11 @@ boolterm =
             b <- boolexp
             return (Not b)
         )
-    <|> try (do
+    <|> (do
             reservedT "true"
             return BTrue
         )
-    <|> try (do
+    <|> (do
             reservedT "false"
             return BFalse
         )
@@ -182,7 +182,7 @@ ifParser = do
 
 commAux :: Parser Comm
 commAux =
-    try (do -- Parser para 'Let'
+    (do -- Parser para 'Let'
         v <- identifierT
         reservedOpT "="
         e <- intexp
