@@ -23,7 +23,7 @@ lis = makeTokenParser
     , commentEnd      = "*/"
     , commentLine     = "//"
     , opLetter        = char '='
-    , reservedNames   = ["true", "false", "skip", "if", "else", "repeat", "until"]
+    , reservedNames   = ["true", "false", "skip", "if", "else", "repeat", "until", "case"]
     , reservedOpNames = [ "+"
                         , "-"
                         , "++"
@@ -203,12 +203,18 @@ ifParser = do
 
 commAux :: Parser Comm
 commAux =
+    (do
+        reservedT "Let"
+        v <- identifierT
+        e <- intexp
+        return (Let v e)
+    <|>
     (do -- Parser para 'Let'
         v <- identifierT
         reservedOpT "="
         e <- intexp
         return (Let v e)
-    )
+    ))
     <|>
     (do -- Parser para 'Skip'
         reservedT "skip"
