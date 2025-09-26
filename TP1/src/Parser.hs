@@ -198,6 +198,27 @@ ifParser = do
         )
     return (IfThenElse b c1 Skip)
 
+
+----------------------------------------------
+--- INICIO: Parser de CASE (Falta testear) :)
+----------------------------------------------
+caseBranch :: Parser (Exp Bool, Comm)
+caseBranch = do
+    b <- boolexp
+    reservedOpT ":"
+    c <- bracesT comm
+    return (b, c)
+
+-- Parser principal para el comando 'case'
+parseCase :: Parser Comm
+parseCase = do
+    reservedT "case"
+    branches <- bracesT (many caseBranch)
+    return (Case branches)
+----------------------------------------------
+--- FIN: Parser de CASE (Falta testear) :)
+----------------------------------------------
+
 commAux :: Parser Comm
 commAux =
     (do -- Parser para 'Let'
@@ -212,15 +233,17 @@ commAux =
         return Skip
     )
     <|>
-    ifParser -- Se reutiliza ifParser, dándolo por definido
+    ifParser
     <|>
-    (do -- Parser para 'Repeat'
+    (do
         reservedT "repeat"
         c <- bracesT comm
         reservedT "until"
         b <- boolexp
         return (RepeatUntil c b)
     )
+    <|>
+    parseCase
 
 
 ------------------------------------
