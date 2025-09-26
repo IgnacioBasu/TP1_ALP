@@ -25,6 +25,7 @@ lis = makeTokenParser
     , reservedNames   = ["true", "false", "skip", "if", "else", "repeat", "until"]
     , reservedOpNames = [ "+"
                         , "-"
+                        , "++"
                         , "*"
                         , "/"
                         , "<"
@@ -58,22 +59,6 @@ symbolT       = symbol lis          -- símbolos como "="
 -----------------------------------
 --- Parser de expresiones enteras
 -----------------------------------
-parseConst :: Parser (Exp Int)
-parseConst = do
-    n <- integerT
-    return (Const (fromInteger n))
-
-parseVar :: Parser (Exp Int)
-parseVar = do
-    v <- identifierT
-    return (Var v)
-
-parseFactor :: Parser (Exp Int)
-parseFactor = do
-      parseConst
-  <|> do parseVar
-  <|> do expr <- parensT intexp
-         return expr
 
 mulOp :: Parser (Exp Int -> Exp Int -> Exp Int)
 mulOp = do
@@ -91,10 +76,35 @@ addOp = do
     reservedOpT "-"
     return Minus
   
-varIncOp :: Parser (Variable -> Exp Int)
+varIncOp :: Parser (Exp Int)
 varIncOp = do
+    v <- identifierT
     reservedOpT "++"
-    return VarInc
+    return (VarInc v)
+
+uMinusOp :: Parser (Exp Int)
+uMinusOp = do
+    reservedOpT "-"
+    n <- parseConst
+    return (UMinus n)
+
+parseVar :: Parser (Exp Int)
+parseVar = do
+    v <- identifierT
+    return (Var v)
+
+parseConst :: Parser (Exp Int)
+parseConst = do
+    n <- integerT
+    return (Const (fromInteger n))
+
+parseFactor :: Parser (Exp Int)
+parseFactor = do varIncOp 
+  <|> do uMinusOp 
+  <|> do parseConst
+  <|> do parseVar
+  <|> do expr <- parensT intexp
+         return expr
 
 parseTerm :: Parser (Exp Int)
 parseTerm = parseFactor `chainl1` mulOp
@@ -177,12 +187,11 @@ ifParser = do
     b <- boolexp
     c1 <- bracesT comm
     
-    ( do
+    (do
         reservedT "else"
         c2 <- bracesT comm
         return (IfThenElse b c1 c2)
-    )
-    <|>
+        )
     return (IfThenElse b c1 Skip)
 
 commAux :: Parser Comm
