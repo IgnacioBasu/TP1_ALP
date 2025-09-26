@@ -90,6 +90,11 @@ addOp = do
   <|> do
     reservedOpT "-"
     return Minus
+  
+varIncOp :: Parser (Variable -> Exp Int)
+varIncOp = do
+    reservedOpT "++"
+    return VarInc
 
 parseTerm :: Parser (Exp Int)
 parseTerm = parseFactor `chainl1` mulOp
