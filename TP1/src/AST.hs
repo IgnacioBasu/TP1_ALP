@@ -50,3 +50,6 @@ pattern Case :: Exp Bool -> Comm -> Comm -> Comm
 pattern Case exp comando sig = IfThenElse exp comando sig
 
 data Error = DivByZero | UndefVar deriving (Eq, Show)
+
+-- Cuando uso Either Error Int tengo que devolvemos una cosa u otra
+-- Debo usar Left ... y Right ... para devolver dependiendo el caso

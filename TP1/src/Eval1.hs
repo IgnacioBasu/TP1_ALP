@@ -7,6 +7,7 @@ where
 import AST
 import qualified Data.Map.Strict as M
 import Data.Strict.Tuple
+import Data.Maybe (fromJust)
 
 --cabal update
 --cabal install strict
@@ -23,9 +24,8 @@ initState = M.empty
 -- Busca el valor de una variable en un estado
 -- Completar la definición
 lookfor :: Variable -> State -> Int
-lookfor v s = case M.lookup v s of 
-                  Just n -> n 
-                  Nothing -> error ("Variable" ++ v ++ "no definida") 
+lookfor v s = fromJust (M.lookup v s) 
+         
 
 -- Cambia el valor de una variable en un estado
 -- Completar la definición
@@ -60,6 +60,15 @@ stepComm (RepeatUntil c b) s = let val = Seq c (IfThenElse b Skip (RepeatUntil c
 evalExp :: Exp a -> State -> Pair a State
 evalExp (Const n) s = n :!: s
 evalExp (Var v) s = lookfor v s :!: s
+evalExp (UMinus e) s =
+    let (v :!: s1) = evalExp e s
+    in (-v) :!: s1
+evalExp (VarInc v) s =
+    let val     = lookfor v s     
+        newVal  = val + 1         
+        newState = update v newVal s  
+    in newVal :!: newState
+
 evalExp (Plus e1 e2) s = 
                         let (v1 :!: s1) = evalExp e1 s
                             (v2 :!: s2) = evalExp e2 s1
@@ -120,7 +129,8 @@ evalExp (NEq b1 b2) s = let (v1 :!: s1) = evalExp b1 s
                             (v2 :!: s2) = evalExp b2 s1
                        in (v1 /= v2) :!: s2 
 
---Lo probaremos con:
--- ghci ./Eval1 -e 1 ejemplos/sqrt.lis:set -package containers
--- ./Eval1 -e 1 ejemplos/error1.lis
--- ./Eval1 -e 1 ejemplos/error2.lis
+-- Lo probaremos con:
+-- stack exec TP1-exe -- ejemplos/sqrt.lis -e 1 (El ultimo numero marca el numero de evaluador)
+-- El sqrt.lis corta cunando t >= 25, que sera cuando i = 5 (6ta iteracion)
+-- El error1.lis es una division por cero
+-- El error2.lis tiene una variable no definida (El evaluador muestra cual es la variable)
