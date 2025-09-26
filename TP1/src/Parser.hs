@@ -61,25 +61,6 @@ symbolT       = symbol lis          -- símbolos como "="
 -----------------------------------
 --- Parser de expresiones enteras
 -----------------------------------
-<<<<<<< HEAD
-parseConst :: Parser (Exp Int)
-parseConst = do
-    n <- integerT
-    return (Const (fromInteger n))
-
-parseVar :: Parser (Exp Int)
-parseVar = do
-    v <- identifierT
-    return (Var v)
-
-parseFactor :: Parser (Exp Int)
-parseFactor = do
-      parseConst
-  <|> do parseVar
-  <|> do expr <- parensT intexp
-         return expr
-=======
->>>>>>> GAGASUALDO
 
 mulOp :: Parser (Exp Int -> Exp Int -> Exp Int)
 mulOp = do
@@ -96,13 +77,6 @@ addOp = do
   <|> do
     reservedOpT "-"
     return Minus
-<<<<<<< HEAD
-
-varInc :: Parser (Variable -> Exp Int)
-varInc = do 
-    reservedOpT "++"
-    return VarInc
-=======
   
 varIncOp :: Parser (Exp Int)
 varIncOp = do
@@ -133,7 +107,6 @@ parseFactor = try varIncOp
   <|> try parseVar
   <|> try (do expr <- parensT intexp
               return expr)
->>>>>>> GAGASUALDO
 
 parseTerm :: Parser (Exp Int)
 parseTerm = parseFactor `chainl1` mulOp
