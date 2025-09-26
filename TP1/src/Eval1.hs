@@ -55,6 +55,7 @@ stepComm (IfThenElse b c1 c2) s = let (cond :!: s1) = evalExp b s
                                   in if cond then c1 :!: s1 else c2 :!: s1
 stepComm (RepeatUntil c b) s = let val = Seq c (IfThenElse b Skip (RepeatUntil c b))
                                in val :!: s
+
 -- Evalúa una expresión
 -- Completar la definición
 evalExp :: Exp a -> State -> Pair a State
