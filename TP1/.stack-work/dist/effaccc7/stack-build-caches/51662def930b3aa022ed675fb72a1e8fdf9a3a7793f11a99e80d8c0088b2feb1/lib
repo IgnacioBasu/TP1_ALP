@@ -2,6 +2,8 @@
 : hash: 9032f6afc97dcddfe8c8b306639eb6f456e3f6667f3dd8268681f51bb77c8634
 C:\Users\Lautaro\Documents\GitHub\TP1_ALP\TP1\.stack-work\dist\effaccc7\build\autogen\Paths_TP1.hs:
   hash: cfc52f812131f60913d1047d738f41e01eb1abe982e9b6af09421be868ef4939
+C:\Users\Lautaro\Documents\GitHub\TP1_ALP\TP1\.stack-work\dist\effaccc7\build\autogen\cabal_macros.h:
+  hash: 9f2be95ac9f9ec8c5358093f4d2fa944a0cc876abd83a8bf6035f3bde717c059
 C:\Users\Lautaro\Documents\GitHub\TP1_ALP\TP1\CHANGELOG.md:
   hash: 4a5dad25e332009fd9bddfcef7764f5f253830e9980ce14403fee3991219ea0a
 C:\Users\Lautaro\Documents\GitHub\TP1_ALP\TP1\README.md:
@@ -17,7 +19,7 @@ C:\Users\Lautaro\Documents\GitHub\TP1_ALP\TP1\src\Eval1.hs:
 C:\Users\Lautaro\Documents\GitHub\TP1_ALP\TP1\src\Eval2.hs:
   hash: 0e3b2913d6fc642272a8c948e01bf8a489ef1b81f97011a8109ea822ca88d00b
 C:\Users\Lautaro\Documents\GitHub\TP1_ALP\TP1\src\Eval3.hs:
-  hash: fd93d073b0f86f7c6d218ccabef08d54dd5501463f4c019fb366f77a74c35bee
+  hash: 82dc527d57ee31b54dde881fce73277c4539cb04a07422d3c51ca3b14d2446d8
 C:\Users\Lautaro\Documents\GitHub\TP1_ALP\TP1\src\PPLis.hs:
   hash: 19cdc6a50a9b2cdecfdc8698e62b3065a1ad7246efac0da323732d5f5285598c
 C:\Users\Lautaro\Documents\GitHub\TP1_ALP\TP1\src\Parser.hs:
