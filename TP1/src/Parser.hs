@@ -209,15 +209,15 @@ caseBranch = do
     c <- bracesT comm
     return (b, c)
 
--- Parser principal para el comando 'case'
-parseCase :: Parser Comm
-parseCase = do
-    reservedT "case"
-    branches <- bracesT (many caseBranch)
-    return (Case branches)
-----------------------------------------------
---- FIN: Parser de CASE (Falta testear) :)
-----------------------------------------------
+-- -- Parser principal para el comando 'case'
+-- parseCase :: Parser Comm
+-- parseCase = do
+--     reservedT "case"
+--     branches <- bracesT (many caseBranch)
+--     return (Case branches)
+-- ----------------------------------------------
+-- --- FIN: Parser de CASE (Falta testear) :)
+-- ----------------------------------------------
 
 commAux :: Parser Comm
 commAux =
@@ -242,8 +242,8 @@ commAux =
         b <- boolexp
         return (RepeatUntil c b)
     )
-    <|>
-    parseCase
+    -- <|>
+    --parseCase
 
 
 ------------------------------------
