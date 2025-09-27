@@ -125,9 +125,14 @@ stepComm (IfThenElse b c1 c2) s = do
 stepCommStar :: Comm -> State -> Either Error (PairTrace Comm)
 stepCommStar c s = stepComm c s
 
+--concatTrucho :: [String] -> String
+--concatTrucho [] = ""
+--concatTrucho (x:xs) = x ++ "\n" ++ concatTrucho xs
 
 -- Evaluador final
+--eval :: Comm -> Either Error (State, String)
 eval :: Comm -> Either Error (State, Trace)
 eval c = do
     ((_, tr) :!: s) <- stepCommStar c initState
     return (s, tr)
+    -- return (s, concatTrucho (map show tr))

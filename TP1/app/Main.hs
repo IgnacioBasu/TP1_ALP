@@ -71,3 +71,10 @@ runOptions fp opts
         | optEval opts == 2 -> print (E2.eval ast)
         | optEval opts == 3 -> print (E3.eval ast)
         | otherwise         -> print (E1.eval ast)
+
+        -- optEval opts == 3 ->
+        --   case E3.eval ast of
+        --     Left err        -> print err
+        --     Right (st, tr)  -> do
+        --       print st
+        --       putStr tr
