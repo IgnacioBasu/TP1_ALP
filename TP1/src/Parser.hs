@@ -87,7 +87,7 @@ varIncOp = do
 uMinusOp :: Parser (Exp Int)
 uMinusOp = do
     reservedOpT "-"
-    n <- parseConst
+    n <- parseFactor
     return (UMinus n)
 
 parseVar :: Parser (Exp Int)
@@ -102,11 +102,13 @@ parseConst = do
 
 parseFactor :: Parser (Exp Int)
 parseFactor = try varIncOp
-  <|> try uMinusOp
-  <|> try parseConst
-  <|> try parseVar
-  <|> try (do expr <- parensT intexp
-              return expr)
+          <|> try uMinusOp
+          <|> try parseConst
+          <|> try parseVar
+          <|> try (do   
+                     expr <- parensT intexp
+                     return expr
+                  ) 
 
 parseTerm :: Parser (Exp Int)
 parseTerm = parseFactor `chainl1` mulOp
