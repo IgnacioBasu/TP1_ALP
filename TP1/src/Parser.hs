@@ -87,7 +87,7 @@ varIncOp = do
 uMinusOp :: Parser (Exp Int)
 uMinusOp = do
     reservedOpT "-"
-    n <- parseConst
+    n <- intexp
     return (UMinus n)
 
 parseVar :: Parser (Exp Int)
