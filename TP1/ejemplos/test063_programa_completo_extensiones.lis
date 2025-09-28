@@ -5,6 +5,6 @@ repeat {
     case {
         x++ < 3 : { y = y + 10 }
         x < 6 : { y = y + 1 }
-        x >= 6 : { y = y - 1 }
+        x > 6 : { y = y - 1 }
     }
 } until x > 7

@@ -46,12 +46,12 @@ getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: 
 
 
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
-bindir     = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\d7ec861c\\bin"
-libdir     = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\d7ec861c\\lib\\x86_64-windows-ghc-9.6.6\\TP1-0.1.0.0-FvVi0Gpu3ux9S5sGxNYZhq-TP1-exe"
-dynlibdir  = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\d7ec861c\\lib\\x86_64-windows-ghc-9.6.6"
-datadir    = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\d7ec861c\\share\\x86_64-windows-ghc-9.6.6\\TP1-0.1.0.0"
-libexecdir = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\d7ec861c\\libexec\\x86_64-windows-ghc-9.6.6\\TP1-0.1.0.0"
-sysconfdir = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\d7ec861c\\etc"
+bindir     = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\030b5f25\\bin"
+libdir     = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\030b5f25\\lib\\x86_64-windows-ghc-9.6.6\\TP1-0.1.0.0-FvVi0Gpu3ux9S5sGxNYZhq-TP1-exe"
+dynlibdir  = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\030b5f25\\lib\\x86_64-windows-ghc-9.6.6"
+datadir    = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\030b5f25\\share\\x86_64-windows-ghc-9.6.6\\TP1-0.1.0.0"
+libexecdir = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\030b5f25\\libexec\\x86_64-windows-ghc-9.6.6\\TP1-0.1.0.0"
+sysconfdir = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP1\\.stack-work\\install\\030b5f25\\etc"
 
 getBinDir     = catchIO (getEnv "TP1_bindir")     (\_ -> return bindir)
 getLibDir     = catchIO (getEnv "TP1_libdir")     (\_ -> return libdir)

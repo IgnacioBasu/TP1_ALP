@@ -2,14 +2,14 @@
 a = 15;
 b = 23;
 c = 8;
-if a >= b {
-    if a >= c {
+if a > b {
+    if a > c {
         max = a
     } else {
         max = c
     }
 } else {
-    if b >= c {
+    if b > c {
         max = b
     } else {
         max = c

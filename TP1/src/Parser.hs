@@ -140,11 +140,11 @@ compOp = (do
             return NEq
          )
      <|> (do
-            reservedOpT ">"
+            reservedOpT "<"
             return Gt
          )
      <|> (do
-            reservedOpT "<"
+            reservedOpT ">"
             return Lt
          )
          
@@ -194,12 +194,14 @@ ifParser = do
     b <- boolexp
     c1 <- bracesT comm
     
-    (do
+    ((do
         reservedT "else"
         c2 <- bracesT comm
         return (IfThenElse b c1 c2)
         )
-    return (IfThenElse b c1 Skip)
+        <|> (return (IfThenElse b c1 Skip))
+        )
+    
 
 
 
