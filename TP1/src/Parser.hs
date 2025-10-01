@@ -102,10 +102,10 @@ parseConst = do
 
 parseFactor :: Parser (Exp Int)
 parseFactor = try varIncOp
-          <|> uMinusOp
-          <|> parseConst
-          <|> parseVar
-          <|> (do   
+          <|> try uMinusOp
+          <|> try parseConst
+          <|> try parseVar
+          <|> try (do   
                      expr <- parensT intexp
                      return expr
                   ) 
@@ -141,11 +141,11 @@ compOp = (do
          )
      <|> (do
             reservedOpT "<"
-            return Gt
+            return Lt
          )
      <|> (do
             reservedOpT ">"
-            return Lt
+            return Gt
          )
          
 

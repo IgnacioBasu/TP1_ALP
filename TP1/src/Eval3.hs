@@ -2,7 +2,6 @@
 module Eval3
   ( eval
   , State
-  , Trace
   , Error
   )
 where
@@ -13,25 +12,24 @@ import Data.Strict.Tuple
 import Data.Maybe (fromJust)
 
 -- Estado: mapa de variables a enteros
-type State = M.Map Variable Int
+type State = (M.Map Variable Int, String)
 
--- Tipo para la traza: lista de comandos ejecutados
-type Trace = [Comm]
-
--- Pair con traza incluida
-type PairTrace a = Pair (a, Trace) State
 
 -- Estado vacÃ­o
 initState :: State
-initState = M.empty
+initState = (M.empty,"")
 
 -- Buscar variable
 lookfor :: Variable -> State -> Either Error Int
-lookfor v s = maybe (Left UndefVar) Right (M.lookup v s)
+lookfor v (m,s) = maybe (Left UndefVar) Right (M.lookup v m)
 
 -- Actualizar variable
 update :: Variable -> Int -> State -> State
-update = M.insert
+update v e (m,traza) = (M.insert v e m,traza)
+
+-- Agrega una traza dada al estado
+addTrace :: String -> State -> State
+addTrace str (m,s) = (m, s ++ str)
 
 -- Evaluar expresiones con manejo de errores
 evalExp :: Exp a -> State -> Either Error (Pair a State)
@@ -94,45 +92,46 @@ evalExp (Not b) s = do
     return ((not v) :!: s1)
 
 -- Ejecutar un comando y devolver su traza paso a paso
-stepComm :: Comm -> State -> Either Error (PairTrace Comm)
-stepComm Skip s = Right ((Skip, []) :!: s)
+stepComm :: Comm -> State -> Either Error (Pair Comm State)
+stepComm Skip s = Right (Skip :!: s)
 
 stepComm (Let v e) s = do
     (val :!: s1) <- evalExp e s
     let s2 = update v val s1
-    Right ((Let v e, [Let v e]) :!: s2)
+    let s3 = addTrace ("Let " ++ v ++ " " ++ show val ++ " ") s2
+    Right (Skip :!: s3)
 
+stepComm (Seq Skip c2) s = Right (c2 :!: s)
 stepComm (Seq c1 c2) s = do
-    ((_, tr1) :!: s1) <- stepCommStar c1 s
-    ((_, tr2) :!: s2) <- stepCommStar c2 s1
-    Right ((Seq Skip Skip, tr1 ++ tr2) :!: s2)
+    (c1' :!: s1) <- stepComm c1 s
+    Right (Seq c1' c2 :!: s1)
 
 stepComm (RepeatUntil c b) s = do
-    ((_, trC) :!: s1) <- stepCommStar c s
+    s1 <- stepCommStar c s
     (cond :!: s2) <- evalExp b s1
     if cond
-       then Right ((Skip, trC) :!: s2)  -- solo guardamos los pasos internos
+       then Right (Skip :!: s2)  -- solo guardamos los pasos internos
        else do
-           ((_, trRest) :!: s3) <- stepComm (RepeatUntil c b) s2
-           Right ((Skip, trC ++ trRest) :!: s3)
+           (_ :!: s3) <- stepComm (RepeatUntil c b) s2
+           Right (Skip :!: s3)
 
 stepComm (IfThenElse b c1 c2) s = do
     (cond :!: s1) <- evalExp b s
     if cond
-       then stepCommStar c1 s1
-       else stepCommStar c2 s1
+       then do
+        s3 <- stepCommStar c1 s1
+        Right (Skip :!: s3) 
+       else do
+        s3 <- stepCommStar c2 s1
+        Right (Skip :!: s3)
 
-stepCommStar :: Comm -> State -> Either Error (PairTrace Comm)
-stepCommStar c s = stepComm c s
+stepCommStar :: Comm -> State -> Either Error State
+stepCommStar Skip s = return s
+stepCommStar c    s = do
+  (c' :!: s') <- stepComm c s
+  stepCommStar c' s'
 
---concatTrucho :: [String] -> String
---concatTrucho [] = ""
---concatTrucho (x:xs) = x ++ "\n" ++ concatTrucho xs
 
 -- Evaluador final
---eval :: Comm -> Either Error (State, String)
-eval :: Comm -> Either Error (State, Trace)
-eval c = do
-    ((_, tr) :!: s) <- stepCommStar c initState
-    return (s, tr)
-    -- return (s, concatTrucho (map show tr))
+eval :: Comm -> Either Error State
+eval p = stepCommStar p initState
