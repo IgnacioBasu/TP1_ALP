@@ -29,6 +29,7 @@ library
       Eval1
       Eval2
       Eval3
+      Parciales
       Parser
       PPLis
   other-modules:
