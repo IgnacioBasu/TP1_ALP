@@ -1,0 +1,7 @@
+def uno = suc 0
+
+def ack = \m:Nat. R (\n:Nat. suc n)
+                    (\f:Nat->Nat. \x:Nat. \n:Nat. R (f uno) 
+                                                  (\r:Nat. \y:Nat. f r) 
+                                                  n)
+                    m

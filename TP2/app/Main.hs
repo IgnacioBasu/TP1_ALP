@@ -250,4 +250,3 @@ prelude = "Ejemplos/Prelude.lam"
 it :: String
 it = "it"
 
-

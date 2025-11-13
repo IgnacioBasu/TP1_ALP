@@ -15,16 +15,29 @@ import Data.Char
 %lexer {lexer} {TEOF}
 
 %token
-    '='     { TEquals }
-    ':'     { TColon }
-    '\\'    { TAbs }
-    '.'     { TDot }
-    '('     { TOpen }
-    ')'     { TClose }
-    '->'    { TArrow }
-    VAR     { TVar $$ }
-    TYPEE   { TTypeE }
-    DEF     { TDef }
+    '='         { TEquals }
+    ':'         { TColon }
+    '\\'        { TAbs }
+    '.'         { TDot }
+    '('         { TOpen }
+    ')'         { TClose }
+    '->'        { TArrow }
+    -- Ejercicio 3
+    'let'       { TLet }
+    'in'        { TIn }
+    -- Ejercicio 4
+    '0'         { TZero }
+    'suc'       { TSuc }
+    'R'         { TNatRec }
+    'Nat'       { TTypeNat }
+    -- Ejercicio 6
+    'nil'       { TNil }
+    'cons'      { TCons }
+    'RL'        { TListRec }
+    'List Nat'  { TTypeList }
+    VAR         { TVar $$ }
+    TYPEE       { TTypeE }
+    DEF         { TDef }
     
 
 %left '=' 
@@ -38,24 +51,33 @@ Def     :  Defexp                      { $1 }
 Defexp  : DEF VAR '=' Exp              { Def $2 $4 } 
 
 Exp     :: { LamTerm }
-        : '\\' VAR ':' Type '.' Exp    { LAbs $2 $4 $6 }
+        -- Ejercicio 3
+        : 'let' VAR '=' Exp 'in' Exp   { LLet $2 $4 $6 }
+        | '\\' VAR ':' Type '.' Exp    { LAbs $2 $4 $6 }
         | NAbs                         { $1 }
-        
+
 NAbs    :: { LamTerm }
         : NAbs Atom                    { LApp $1 $2 }
+        | 'suc' NAbs                   { LSuc $2 }
+        | 'cons' NAbs NAbs             { LCons $2 $3 }
+        | 'R' NAbs NAbs NAbs           { LRec $2 $3 $4 }
+        | 'RL' NAbs NAbs NAbs          { LRec $2 $3 $4 }
         | Atom                         { $1 }
 
 Atom    :: { LamTerm }
         : VAR                          { LVar $1 }  
+        | '0'                          { LZero }
+        | 'nil'                        { LNil }
         | '(' Exp ')'                  { $2 }
 
 Type    : TYPEE                        { EmptyT }
         | Type '->' Type               { FunT $1 $3 }
+        | 'Nat'                        { NatT }
+        | 'List Nat'                   { ListT }
         | '(' Type ')'                 { $2 }
 
 Defs    : Defexp Defs                  { $1 : $2 }
         |                              { [] }
-     
 {
 
 data ParseResult a = Ok a | Failed String
@@ -96,6 +118,19 @@ data Token = TVar String
                | TArrow
                | TEquals
                | TEOF
+               -- Ejercicio 3
+               | TLet
+               | TIn
+               -- Ejercicio 4
+               | TZero
+               | TSuc
+               | TNatRec
+               | TTypeNat
+               -- Ejercicio 6
+               | TNil
+               | TCons
+               | TListRec
+               | TTypeList
                deriving Show
 
 ----------------------------------
@@ -116,11 +151,30 @@ lexer cont s = case s of
                     (')':cs) -> cont TClose cs
                     (':':cs) -> cont TColon cs
                     ('=':cs) -> cont TEquals cs
+                    -- Ejercicio 4
+                    ('0':cs) -> cont TZero cs
                     unknown -> \line -> Failed $ 
                      "Línea "++(show line)++": No se puede reconocer "++(show $ take 10 unknown)++ "..."
                     where lexVar cs = case span isAlpha cs of
                               ("E",rest)    -> cont TTypeE rest
                               ("def",rest)  -> cont TDef rest
+                              -- Ejercicio 3
+                              ("let", rest) -> cont TLet rest
+                              ("in", rest) -> cont TIn rest
+                              -- Ejercicio 4
+                              ("suc", rest) -> cont TSuc rest
+                              ("R", rest) -> cont TNatRec rest
+                              ("Nat", rest) -> cont TTypeNat rest
+                              -- Ejercicio 6
+                              ("nil", rest) -> cont TNil rest
+                              ("cons", rest) -> cont TCons rest
+                              ("RL", rest) -> cont TListRec rest
+                              ("List", rest) -> let
+                                                  (_, rest') = span isSpace rest
+                                                in case span isAlpha rest' of
+                                                  ("Nat", rest'') -> cont TTypeList rest''
+                                                  _ -> 
+                                                    \ line -> Failed $ "Línea "++(show line)++": Solo se permiten listas de naturales"
                               (var,rest)    -> cont (TVar var) rest
                           consumirBK anidado cl cont s = case s of
                               ('-':('-':cs)) -> consumirBK anidado cl cont $ dropWhile ((/=) '\n') cs
