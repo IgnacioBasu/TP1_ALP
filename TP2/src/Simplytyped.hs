@@ -215,4 +215,3 @@ infer' c e (Rec t1 t2 t3) =
 infer' c e Nil = ret ListT
 infer' c e (Cons t1 t2) = 
   match NatT (infer' c e t1) >> match ListT (infer' c e t2) >> ret ListT
-

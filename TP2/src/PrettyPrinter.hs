@@ -109,3 +109,4 @@ fv (Cons t u) = fv t ++ fv u
 ---
 printTerm :: Term -> Doc
 printTerm t = pp 0 (filter (\v -> v `notElem` fv t) vars) t
+

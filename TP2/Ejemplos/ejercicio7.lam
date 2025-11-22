@@ -1,3 +1,6 @@
-def sumPos = \l:List Nat. RL nil
-                             (\n:Nat. \lv:List Nat. \r:List Nat. cons (suc n) r)
-                             l
+def add = \a:Nat. \b:Nat. R b (\r:Nat. \k:Nat. suc r) a
+
+def sumPos = \l:List Nat.
+  (RL (\i:Nat. nil)
+      (\n:Nat. \lv:List Nat. \r:Nat -> List Nat. \i:Nat. cons (add n i) (r (suc i)))
+      l) (suc 0)
