@@ -1,3 +1,6 @@
+
+-- Integrantes: Basualdo Ignacio, Capezio Lautaro, Duarte Luciano
+
 module Simplytyped
   ( conversion
   ,    -- conversion a terminos localmente sin nombre
@@ -15,6 +18,7 @@ import           Prelude                 hiding ( (>>=), (>>) )
 import           Text.PrettyPrint.HughesPJ      ( render )
 import           PrettyPrinter
 import           Common
+import Common (Type)
 
 -----------------------
 -- conversion
@@ -32,6 +36,8 @@ toTerm f (LCons t1 t2) = Cons (f t1) (f t2)
 -- Estos ultimos no se usan
 toTerm f t = error $ "No se puede convertir el lambda termino " ++ show t ++ " a un termino"
 
+-- Ejercicio 1
+
 -- conversion a términos localmente sin nombres
 conversion :: LamTerm -> Term
 conversion = conversion' []
@@ -40,7 +46,7 @@ conversion' :: [String] -> LamTerm -> Term
 conversion' vars (LVar name) = maybe (Free (Global name)) Bound (elemIndex name vars)
 conversion' vars t@(LAbs name _ _) = toTerm (conversion' (name:vars)) t
 
--- Ejercicio 3
+-- Extension let ejercicio 3
 conversion' vars (LLet name t1 t2) = let
                                       t1' = conversion' vars t1
                                       t2' = conversion' (name:vars) t2
@@ -60,9 +66,9 @@ sub i t (Bound j)
 sub _ _ (Free n   )           = Free n
 sub i t (u   :@: v)           = sub i t u :@: sub i t v
 sub i t (Lam t'  u)           = Lam t' (sub (i + 1) t u)
--- Ejercicio 3
+-- Extension let ejercicio 3
 sub i t (Let u v) = Let (sub i t u) (sub i t v)
--- Ejercicio 4
+-- Extension naturales ejercicio 4
 sub i t Zero = Zero
 sub i t (Suc u) = Suc $ sub i t u
 sub i t (Rec u v w) = let
@@ -77,15 +83,17 @@ sub i t (Cons x xs) = Cons (sub i t x) (sub i t xs)
 -- convierte un valor en el término equivalente
 quote :: Value -> Term
 quote (VLam t f) = Lam t f
--- Ejercicio 4
+-- Extension naturales ejercicio 4
 quote (VNum NZero) = Zero
 quote (VNum (NSuc n)) = Suc $ quote $ VNum n
--- Ejercicio 6
+-- Extension listas de naturales ejercicio 6
 quote (VList VNil) = Nil
 quote (VList (VCons x xs)) = Cons (quote (VNum x)) (quote (VList xs))
 
+-- Ejercicio 2
+
 -- evalúa un término en un entorno dado
-eval :: NameEnv Value Type -> Term -> Value
+eval :: NameEnv Value Type-> Term -> Value
 eval nvs (Free n) = fst $ fromJust $ lookup n nvs -- infer previamente chequeo que la variable esta definida
 eval nvs (Lam t u) = VLam t u
 eval nvs (t1 :@: t2) = let
@@ -93,13 +101,13 @@ eval nvs (t1 :@: t2) = let
                         t2' = eval nvs t2
                        in
                         eval nvs $ sub 0 (quote t2') t1'
--- Ejercicio 3
+-- Extension let ejercicio 3
 eval nvs (Let t u) = let
                       t' = eval nvs t
                      in
                       eval nvs $ sub 0 (quote t') u
 
--- Ejercicio 4
+-- Extension naturales ejercicio 4
 eval nvs Zero = VNum NZero
 eval nvs (Suc n) = let 
                     (VNum n') = eval nvs n
@@ -119,7 +127,7 @@ eval nvs (Rec t1 t2 t3) = case eval nvs t3 of
                                                   in
                                                     eval nvs $ t2 :@: n' :@: lv' :@: Rec t1 t2 lv'
                             val -> error $ "Se esperaba un NumVal o un ListVal, pero se recibio " ++ show val
--- Ejercicio 6
+-- Extension listas de naturales ejercicio 6
 eval nvs Nil = VList VNil
 eval nvs (Cons x xs) = let
                         (VNum x') = eval nvs x
@@ -198,10 +206,10 @@ infer' c _ (Bound i) = ret (c !! i)
 infer' _ e (Free  n) = maybe (notfoundError n) (ret . snd) (lookup n e)
 infer' c e (t :@: u) = checkIsFun (infer' c e t) >>= \(FunT t1 t2) -> match t1 (infer' c e u) >> ret t2
 infer' c e (Lam t u) = infer' (t : c) e u >>= \tu -> ret $ FunT t tu
--- Ejercicio 3
+-- Extension let ejercicio 3
 infer' c e (Let t u) = infer' c e t >>= \tt -> infer' (tt : c) e u
 
--- Ejercicio 4
+-- Extension naturales ejercicio 4
 infer' c e Zero = ret NatT
 infer' c e (Suc t) = match NatT $ infer' c e t
 infer' c e (Rec t1 t2 t3) = 
@@ -211,7 +219,8 @@ infer' c e (Rec t1 t2 t3) =
       (FunT NatT (FunT ListT (FunT tt1 tt1)), match ListT (infer' c e t3))
     ] (infer' c e t2) 
     >> ret tt1
--- Ejercicio 6
+-- Extension listas de naturales ejercicio 6
 infer' c e Nil = ret ListT
 infer' c e (Cons t1 t2) = 
   match NatT (infer' c e t1) >> match ListT (infer' c e t2) >> ret ListT
+

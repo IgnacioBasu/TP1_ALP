@@ -29,12 +29,12 @@ version :: Version
 version = Version [0,1,0,0] []
 bindir, libdir, dynlibdir, datadir, libexecdir, sysconfdir :: FilePath
 
-bindir     = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\1fd26d92\\bin"
-libdir     = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\1fd26d92\\lib\\x86_64-windows-ghc-8.8.4\\TP2-0.1.0.0-KJ26XcQb6zja8ZUcR6HAi-TP2-exe"
-dynlibdir  = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\1fd26d92\\lib\\x86_64-windows-ghc-8.8.4"
-datadir    = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\1fd26d92\\share\\x86_64-windows-ghc-8.8.4\\TP2-0.1.0.0"
-libexecdir = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\1fd26d92\\libexec\\x86_64-windows-ghc-8.8.4\\TP2-0.1.0.0"
-sysconfdir = "C:\\Users\\Usuario\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\1fd26d92\\etc"
+bindir     = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\d03249e7\\bin"
+libdir     = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\d03249e7\\lib\\x86_64-windows-ghc-8.8.4\\TP2-0.1.0.0-KJ26XcQb6zja8ZUcR6HAi-TP2-exe"
+dynlibdir  = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\d03249e7\\lib\\x86_64-windows-ghc-8.8.4"
+datadir    = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\d03249e7\\share\\x86_64-windows-ghc-8.8.4\\TP2-0.1.0.0"
+libexecdir = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\d03249e7\\libexec\\x86_64-windows-ghc-8.8.4\\TP2-0.1.0.0"
+sysconfdir = "C:\\Users\\Lautaro\\Documents\\GitHub\\TP1_ALP\\TP2\\.stack-work\\install\\d03249e7\\etc"
 
 getBinDir, getLibDir, getDynLibDir, getDataDir, getLibexecDir, getSysconfDir :: IO FilePath
 getBinDir = catchIO (getEnv "TP2_bindir") (\_ -> return bindir)

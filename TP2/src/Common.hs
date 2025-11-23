@@ -1,3 +1,7 @@
+
+
+-- Integrantes: Basualdo Ignacio, Capezio Lautaro, Duarte Luciano
+
 module Common where
 
   -- Comandos interactivos o de archivos
@@ -19,7 +23,7 @@ module Common where
   -- Tipo de los tipos
   data Type = EmptyT 
             | FunT Type Type
-            -- Sección 8
+            -- Extension naturales ejercicio 4
             | NatT
             | ListT
             deriving (Show, Eq)
@@ -28,13 +32,13 @@ module Common where
   data LamTerm  =  LVar String
                 |  LAbs String Type LamTerm
                 |  LApp LamTerm LamTerm
-                -- Sección 8
+                -- Extension let ejercicio 3
                 |  LLet String LamTerm LamTerm
-                -- naturales 
+                -- Extension naturales ejercicio 4
                 |  LZero
                 |  LSuc LamTerm
                 |  LRec LamTerm LamTerm LamTerm
-                -- listas
+                -- Extension listas de naturales ejercicio 6
                 |  LNil
                 |  LCons LamTerm LamTerm
                 deriving (Show, Eq)
@@ -45,20 +49,20 @@ module Common where
              | Free Name 
              | Term :@: Term
              | Lam Type Term
-             -- Sección 8
+             -- Extension let ejercicio 3
              | Let Term Term
-             -- naturales
+             -- Extension naturales ejercicio 4
              | Zero
              | Suc Term
              | Rec Term Term Term
-             -- listas
+             -- Extension listas de naturales ejercicio 6
              | Nil
              | Cons Term Term
           deriving (Show, Eq)
 
   -- Valores
   data Value = VLam Type Term 
-             -- Sección 8
+             -- Extension naturales ejercicio 4
              | VNum NumVal
              | VList ListVal
              

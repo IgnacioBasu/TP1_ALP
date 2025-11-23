@@ -1,3 +1,6 @@
+
+-- Integrantes: Basualdo Ignacio, Capezio Lautaro, Duarte Luciano
+
 module PrettyPrinter
   ( printTerm  ,     -- pretty printer para terminos
     printType        -- pretty printer para tipos
@@ -82,7 +85,7 @@ printType :: Type -> Doc
 printType EmptyT = text "E"
 printType (FunT t1 t2) =
   sep [parensIf (isFun t1) (printType t1), text "->", printType t2]
--- Ejercicio 4
+-- Extension naturales ejercicio 4
 printType NatT = text "Nat"
 -- Ejercicio 6
 printType ListT = text "List Nat"
@@ -96,9 +99,9 @@ fv (Bound _         ) = []
 fv (Free  (Global n)) = [n]
 fv (t   :@: u       ) = fv t ++ fv u
 fv (Lam _   u       ) = fv u
--- Ejercicio 3
+-- Extension let ejercicio 3
 fv (Let t u) = fv t ++ fv u
--- Ejercicio 4
+-- Extension naturales ejercicio 4
 fv Zero = []
 fv (Suc t) = fv t
 fv (Rec t u v) = fv t ++ fv u ++ fv v
@@ -109,4 +112,3 @@ fv (Cons t u) = fv t ++ fv u
 ---
 printTerm :: Term -> Doc
 printTerm t = pp 0 (filter (\v -> v `notElem` fv t) vars) t
-

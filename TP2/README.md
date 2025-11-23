@@ -9,7 +9,7 @@ Antes que nada, puede que tengas que instalarlo. En [1](https://docs.haskellstac
 
 Stack se encarga de instalar la versión correcta de GHC, instalar los paquetes necesarios y compilar el proyecto. Para las primeras dos, basta con abrir una terminal en el directorio `TP2` y ejecutar:
 ```
-stack setup
+stack setup 
 ```
 Esto puede demorar un rato porque se encarga de descargar e instalar la verisón correcta de GHC. Este comando solo se debería tener que ejecutar una única vez. Al terminar esto, está todo listo para compilar el proyecto, que se hace con:
 ```

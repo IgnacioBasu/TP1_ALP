@@ -509,10 +509,10 @@ data Token = TVar String
                | TArrow
                | TEquals
                | TEOF
-               -- Ejercicio 3
+               -- Extension let ejercicio 3
                | TLet
                | TIn
-               -- Ejercicio 4
+               -- Extension naturales ejercicio 4
                | TZero
                | TSuc
                | TNatRec
@@ -542,17 +542,17 @@ lexer cont s = case s of
                     (')':cs) -> cont TClose cs
                     (':':cs) -> cont TColon cs
                     ('=':cs) -> cont TEquals cs
-                    -- Ejercicio 4
+                    -- Extension naturales ejercicio 4
                     ('0':cs) -> cont TZero cs
                     unknown -> \line -> Failed $ 
                      "Línea "++(show line)++": No se puede reconocer "++(show $ take 10 unknown)++ "..."
                     where lexVar cs = case span isAlpha cs of
                               ("E",rest)    -> cont TTypeE rest
                               ("def",rest)  -> cont TDef rest
-                              -- Ejercicio 3
+                              -- Extension let ejercicio 3
                               ("let", rest) -> cont TLet rest
                               ("in", rest) -> cont TIn rest
-                              -- Ejercicio 4
+                              -- Extension naturales ejercicio 4
                               ("suc", rest) -> cont TSuc rest
                               ("R", rest) -> cont TNatRec rest
                               ("Nat", rest) -> cont TTypeNat rest
