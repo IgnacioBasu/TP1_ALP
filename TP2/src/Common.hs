@@ -23,7 +23,7 @@ module Common where
   -- Tipo de los tipos
   data Type = EmptyT 
             | FunT Type Type
-            -- Extension naturales ejercicio 4
+            -- Sección 8
             | NatT
             | ListT
             deriving (Show, Eq)
@@ -32,13 +32,13 @@ module Common where
   data LamTerm  =  LVar String
                 |  LAbs String Type LamTerm
                 |  LApp LamTerm LamTerm
-                -- Extension let ejercicio 3
+                -- Sección 8
                 |  LLet String LamTerm LamTerm
-                -- Extension naturales ejercicio 4
+                -- naturales
                 |  LZero
                 |  LSuc LamTerm
                 |  LRec LamTerm LamTerm LamTerm
-                -- Extension listas de naturales ejercicio 6
+                -- listas
                 |  LNil
                 |  LCons LamTerm LamTerm
                 deriving (Show, Eq)
@@ -49,20 +49,20 @@ module Common where
              | Free Name 
              | Term :@: Term
              | Lam Type Term
-             -- Extension let ejercicio 3
+             -- Sección 8
              | Let Term Term
-             -- Extension naturales ejercicio 4
+             -- naturales
              | Zero
              | Suc Term
              | Rec Term Term Term
-             -- Extension listas de naturales ejercicio 6
+             -- listas
              | Nil
              | Cons Term Term
           deriving (Show, Eq)
 
   -- Valores
   data Value = VLam Type Term 
-             -- Extension naturales ejercicio 4
+             -- Sección 8
              | VNum NumVal
              | VList ListVal
              
