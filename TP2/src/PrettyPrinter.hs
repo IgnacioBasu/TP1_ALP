@@ -87,7 +87,7 @@ printType (FunT t1 t2) =
   sep [parensIf (isFun t1) (printType t1), text "->", printType t2]
 -- Extension naturales ejercicio 4
 printType NatT = text "Nat"
--- Ejercicio 6
+-- Extension listas de naturales ejercicio 6
 printType ListT = text "List Nat"
 
 isFun :: Type -> Bool
@@ -105,7 +105,7 @@ fv (Let t u) = fv t ++ fv u
 fv Zero = []
 fv (Suc t) = fv t
 fv (Rec t u v) = fv t ++ fv u ++ fv v
--- Ejercicio 6
+-- Extension listas de naturales ejercicio 6
 fv Nil = []
 fv (Cons t u) = fv t ++ fv u
 

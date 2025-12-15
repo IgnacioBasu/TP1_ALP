@@ -33,7 +33,7 @@ import Data.Char
     'suc'       { TSuc }
     'R'         { TNatRec }
     'Nat'       { TTypeNat }
-    -- Ejercicio 6
+    -- Extension listas de naturales ejercicio 6
     'nil'       { TNil }
     'cons'      { TCons }
     'RL'        { TListRec }
@@ -129,7 +129,7 @@ data Token = TVar String
                | TSuc
                | TNatRec
                | TTypeNat
-               -- Ejercicio 6
+               -- Extension listas de naturales ejercicio 6
                | TNil
                | TCons
                | TListRec
@@ -168,7 +168,7 @@ lexer cont s = case s of
                               ("suc", rest) -> cont TSuc rest
                               ("R", rest) -> cont TNatRec rest
                               ("Nat", rest) -> cont TTypeNat rest
-                              -- Ejercicio 6
+                              -- Extension listas de naturales ejercicio 6
                               ("nil", rest) -> cont TNil rest
                               ("cons", rest) -> cont TCons rest
                               ("RL", rest) -> cont TListRec rest
