@@ -27,6 +27,7 @@ pExp (Gt  a b     ) = pExp a <+> text ">" <+> pExp b
 pExp (And a b     ) = pExp a <+> text "&&" <+> pExp b
 pExp (Or  a b     ) = pExp a <+> text "||" <+> pExp b
 pExp (Not b       ) = text "!" <+> pExp b
+pExp (VarInc v)     = pVar v <> text "++"
 -- Ejercicio 2
 pExp (EAssgn x  e ) = parens $ pVar x <+> text "=" <+> pExp e
 pExp (ESeq   e1 e2) = pExp e1 <> comma <+> pExp e2
@@ -35,6 +36,13 @@ pComm :: Comm -> Doc
 pComm Skip        = text "skip"
 pComm (Let x  e ) = pVar x <+> text "=" <+> pExp e
 pComm (Seq c1 c2) = pComm c1 <> semi $$ pComm c2
+
+---------------------------------------
+--ES NECESARIO IMPLEMENTAR EL CASE?  <----- CONSULTAR X ZULIP
+--pComm (Case a b c) =
+--  text "case" <+> parens (pExp a) <+> lbrace $$ nest tabW (pComm b) $$ rbrace <+> text "else" <+> lbrace $$ nest tabW (pComm c) $$ rbrace
+---------------------------------------
+
 pComm (IfThen b c) =
   text "if" <+> parens (pExp b) <+> lbrace $$ nest tabW (pComm c) $$ rbrace
 pComm (IfThenElse b c1 c2) =
@@ -55,4 +63,3 @@ renderComm = render . pComm
 
 renderExp :: Exp a -> String
 renderExp = render . pExp
-
