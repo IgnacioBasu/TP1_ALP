@@ -59,8 +59,6 @@ instance MonadState StateError where
 eval :: Comm -> Either Error Env
 eval p = runStateError (stepCommStar p) initEnv >>= (return . snd)
 
---          <<<<<<<<REVISAR CON DETALLES>>>>>>>>>>
-
 -- Evalua multiples pasos de un comando, hasta alcanzar un Skip
 stepCommStar :: (MonadState m, MonadError m) => Comm -> m ()
 stepCommStar Skip = return ()
@@ -78,93 +76,75 @@ stepComm c@(Repeat b c1) = do p <- evalExp b
                               if p then stepComm c1 >> stepComm c 
                                    else stepComm Skip
 
-
-
--- Evaluacion de expresiones
--- Adaptamos las funciones del tp1 para el evaluador monadico
-
--- Si el predicado es verdadero ejecuta la expresion s, sino no ejecuta nada
--- Inspirada en la funcion homonima de Control.Monad
-when :: Applicative f => Bool -> f () -> f ()
-when p s  = if p then s else pure ()
-
 -- Evalua a una expresion constante
 evalConst :: (MonadState m, MonadError m) => a -> m a
 evalConst = return
 
+-- Evalua una operacion unaria sobre una variable entera, 
+-- obteniendo la actualización de estado de la misma
+evalVarOp :: (MonadState m, MonadError m) => (Int->Int) -> Variable -> m Int
+evalVarOp op v = do {
+                  x <- lookfor v;
+                  let x' = op x in do
+                    ifThen2 (x/=x') (update v x');
+                    return x';
+                 }
+    where
+      ifThen2 :: Applicative f => Bool -> f () -> f ()
+      ifThen2 pred expr = if pred then expr else pure ()
+
 -- Toma una operacion unaria y una expresion y evalua la operacion sobre la expresion
-evalUnOp :: (MonadState m, MonadError m) => (a->b) -> Exp a -> m b
-evalUnOp op = (fmap op) . evalExp
+evalOpUnaria :: (MonadState m, MonadError m) => (a->b) -> Exp a -> m b
+evalOpUnaria op = (fmap op) . evalExp
 
 -- Funcion que chequea una condicion sobre 2 valores
 type Check a m = a -> a -> m ()
 
 -- Si se quiere hacer una division por 0, se lanza un error
 checkDivByZero :: (MonadError m) => Check Int m
-checkDivByZero _ y = when (y==0) (throw DivByZero)
+checkDivByZero _ y = ifThen2 (y==0) (throw DivByZero)
+  where
+    ifThen2 :: Applicative f => Bool -> f () -> f ()
+    ifThen2 pred expr = if pred then expr else pure ()
 
--- No realiza ningun chequeo
-noCheck :: Applicative m => Check a m
-noCheck _ _ = pure ()
-
-{-
-  check: Esta funcion chequea una condicion sobre la evaluacion de x e y, realizando efectos si se cumple o no.
-  Por ejemplo, se puede chequear que y no sea 0 al hacer una division.
-
-  op: Operacion binaria a realizar
-
-  x,y: Dos expresiones sobre las que se realiza una expresion luego de evaluarlas
-
-  Evalua dos expresiones, realiza un chequeo sobre ellas y devuelve el resultado de realizar op
-  sobre los valores obtenidos de las expresiones.
--}
-evalBinOpWithCheck :: (MonadState m, MonadError m) => Check a m -> (a->a->b) -> Exp a -> Exp a -> m b
-evalBinOpWithCheck check op x y = do
+-- Toma una condicion a chequear, una operacion y dos expresiones
+-- Decide en caso de pasar el chequeo, evaluar la operacion sobre las expresiones
+evalDivCheck :: (MonadState m, MonadError m) => Check a m -> (a->a->b) -> Exp a -> Exp a -> m b
+evalDivCheck check op x y = do
                                     x' <- evalExp x
                                     y' <- evalExp y
                                     check x' y'
-                                    return (x' `op` y')
+                                    return (op x' y')
 
-{-
-  Igual que evalBinOpWithCheck, pero no realiza un chequeo
--}
-evalBinOp :: (MonadState m, MonadError m) => (a->a->b) -> Exp a -> Exp a -> m b
-evalBinOp = evalBinOpWithCheck noCheck
+-- Toma una operacion binaria y dos expresiones y evalua la operacion sobre las expresiones
+evalOpBinaria :: (MonadState m, MonadError m) => (a->a->b) -> Exp a -> Exp a -> m b
+evalOpBinaria op x y = do
+                          x1 <- evalExp x
+                          y1 <- evalExp y
+                          return (op x1 y1)
 
-{- 
-  Evalua una operacion unaria sobre una variable entera, actualizando el estado de esa variable
--}
-evalVarOp :: (MonadState m, MonadError m) => (Int->Int) -> Variable -> m Int
-evalVarOp op v = do {
-                  x <- lookfor v;
-                  let x' = op x in do
-                    when (x/=x') (update v x');
-                    return x';
-                 }
 
 evalExp :: (MonadState m, MonadError m) => Exp a -> m a
--- Operaciones con variables
+-- Int
+evalExp (Const a) = evalConst a
 evalExp (Var v) = evalVarOp id v
 evalExp (VarInc v)= evalVarOp (+1) v
+evalExp (UMinus x) = evalOpUnaria negate x
+evalExp (Plus x y) = evalOpBinaria (+) x y
+evalExp (Minus x y) = evalOpBinaria (-) x y
+evalExp (Times x y) = evalOpBinaria (*) x y
+-- ejercicio 2
+evalExp (Div x y) = evalDivCheck checkDivByZero div x y
 
--- Enteros
-evalExp (Const a) = evalConst a
-evalExp (UMinus x) = evalUnOp negate x
-evalExp (Plus x y) = evalBinOp (+) x y
-evalExp (Minus x y) = evalBinOp (-) x y
-evalExp (Times x y) = evalBinOp (*) x y
--- Aqui es necesario chequear no dividir por 0
-evalExp (Div x y) = evalBinOpWithCheck checkDivByZero div x y
-
--- Booleanos
+-- Bool
 evalExp BTrue = evalConst True
 evalExp BFalse = evalConst False
-evalExp (Lt x y) = evalBinOp (<) x y
-evalExp (Gt x y) = evalBinOp (>) x y
-evalExp (And x y) = evalBinOp (&&) x y
-evalExp (Or x y) = evalBinOp (||) x y
-evalExp (Not x) = evalUnOp not x
-evalExp (Eq x y) = evalBinOp (==) x y
-evalExp (NEq x y) = evalBinOp (/=) x y
+evalExp (Lt x y) = evalOpBinaria (<) x y
+evalExp (Gt x y) = evalOpBinaria (>) x y
+evalExp (And x y) = evalOpBinaria (&&) x y
+evalExp (Or x y) = evalOpBinaria (||) x y
+evalExp (Not x) = evalOpUnaria not x
+evalExp (Eq x y) = evalOpBinaria (==) x y
+evalExp (NEq x y) = evalOpBinaria (/=) x y
 
 
