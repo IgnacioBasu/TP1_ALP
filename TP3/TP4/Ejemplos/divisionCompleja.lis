@@ -1,0 +1,4 @@
+// Test error: Division por cero
+x = 90;
+c = (30 * 2) - (2*3*10);
+x = x / c

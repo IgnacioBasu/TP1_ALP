@@ -8,7 +8,7 @@ import           AST
 import           Monads
 import qualified Data.Map.Strict               as M
 import           Data.Maybe
-import           Prelude                 hiding ( fst
+import           Prelude                 hiding ( fst --problemas de doble def
                                                 , snd
                                                 )
 import           Data.Strict.Tuple

@@ -25,7 +25,9 @@ data Exp a where
   Eq ::Exp Int -> Exp Int -> Exp Bool
   NEq ::Exp Int -> Exp Int -> Exp Bool
 
---
+-- No lo implementamos porque asi nos lo indicaron
+-- pero sin estas definiciones no compila, pues están incluidos
+-- en el parser y en el pretty printer(dificil de remover)
   EAssgn ::Variable -> Exp Int -> Exp Int
   ESeq ::Exp Int -> Exp Int -> Exp Int
 

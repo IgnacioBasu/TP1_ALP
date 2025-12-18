@@ -1,0 +1,7 @@
+// Test 02: for sumar + 2
+x = 0;
+i = 0;
+sumar = 2;
+repeat (i < 4) { i = i + 1; x = x + sumar};
+number = -1;
+x = x + number

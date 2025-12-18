@@ -1,0 +1,3 @@
+// Test error: Division por una variable indefinida
+x = 90;
+x = x / c

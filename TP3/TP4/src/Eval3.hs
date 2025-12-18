@@ -70,7 +70,7 @@ instance MonadError StateErrorTrace where
 instance MonadState StateErrorTrace where
   lookfor v = StateErrorTrace (\s -> runStateErrorTrace (lookfor' v s) s)
     where lookfor' v s = case M.lookup v s of
-                          Nothing -> addTrace (v ++ " = ???") >> addTrace ("throw UndefVar " ++ v) >> throw' UndefVar
+                          Nothing -> addTrace ("throw UndefVar " ++ v) >> throw' UndefVar
                           Just x' -> return x'
 
   -- Agrega una traza de actualizacion de una variable y actualiza el estado

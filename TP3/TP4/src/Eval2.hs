@@ -12,7 +12,7 @@ import           Data.Strict.Tuple
 import           Control.Monad                  ( liftM
                                                 , ap
                                                 )
-import Prelude hiding (fst,snd)
+import Prelude hiding (fst,snd) --problemas de doble def
 -- Entornos
 type Env = M.Map Variable Int
 
